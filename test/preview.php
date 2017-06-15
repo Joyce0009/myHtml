@@ -7,25 +7,33 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    var img = new Image();
-                    img.onload = function() {
-                        console.log('w ' + this.width);
-                        console.log('h ' + this.height);
-                    };
-                    img.src = e.target.result;
+                    showImageDimen(e.target.result);
                     $('#preview').css("display", "inline");
                     $('#imagePreview').attr('src', e.target.result);
                 };
-                reader.readAsDataURL(input.files[0]);
-                console.log('filename ' + input.files[0].name);
-                console.log('size ' + input.files[0].size);
-                console.log('type ' + input.files[0].type);
+                var file = input.files[0];
+                reader.readAsDataURL(file);
+                showFileInfo(file);
             }
         }
 
         function removeFile() {
             $('#preview').css("display", "none");
             $('#fileToUpload').val("");
+        }
+
+        function showFileInfo(file) {
+            $('#filename').text(file.name);
+            $('#type').text(file.type);
+            $('#size').text((file.size*0.00000095367432).toFixed(2));
+        }
+
+        function showImageDimen(src) {
+            var img = new Image();
+            img.onload = function() {
+               $('#dimension').text(this.width + 'x' + this.height);
+            };
+            img.src = src;
         }
     </script>
     <style>
@@ -92,8 +100,16 @@
                                 <img id="deleteimg" src="delete.png" onclick="removeFile();">
                                 <div id="imageInfo">
                                     <table>
-                                        <tr><th>Type</th><th>Size(MB)</th><th>W/H(px)</th><th>Filename</th></tr>
-                                        <tr><td>png</td><td>10</td><td>1280/1920</td><td>123.png</td></tr>
+                                        <tr><th>Filename</th>
+                                            <th>Type</th>
+                                            <th>WxH(px)</th>
+                                            <th>Size(MB)</th>
+                                        </tr>
+                                        <tr><td><span id="filename"></td>
+                                            <td><span id="type"></td>
+                                            <td><span id="dimension"></td>
+                                            <td><span id="size"></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
